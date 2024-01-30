@@ -1,7 +1,5 @@
 library time_scale;
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:time_scale/time_period.dart';
 import 'package:time_scale/widgets/hour_mark_widget.dart';
@@ -11,6 +9,7 @@ typedef ScaleItemBuilder = Widget Function(BuildContext context, int hour);
 
 class TimeScale extends StatefulWidget {
   final List<TimePeriod> periods;
+  final Map<TimePeriod, Color> colors;
   final double scaleStep;
   final double scaleMax;
   final bool isInfinite;
@@ -20,6 +19,7 @@ class TimeScale extends StatefulWidget {
   const TimeScale(
       {super.key,
       required this.periods,
+      required this.colors,
       this.scaleStep = 1.0,
       this.scaleMax = 24,
       required this.initialHour,
@@ -31,13 +31,6 @@ class TimeScale extends StatefulWidget {
 }
 
 class _TimeScaleState extends State<TimeScale> {
-  static Color get randomColor {
-    var generatedColor = Random().nextInt(Colors.primaries.length);
-    return Colors.primaries[generatedColor];
-  }
-
-  late final colors =
-      Map.fromEntries(widget.periods.map((e) => MapEntry(e, randomColor)));
   static const hourHeight = 30.0;
   static const hourWidth = 30.0;
 
@@ -46,7 +39,7 @@ class _TimeScaleState extends State<TimeScale> {
             localTime: item,
             hour: hour,
             hourHeight: hourHeight,
-            color: colors[item] ?? Colors.black,
+            color: widget.colors[item] ?? Colors.black,
           );
 
   ScaleItemBuilder scaleVerticalDotBuilder = (context, hour) =>
@@ -57,7 +50,7 @@ class _TimeScaleState extends State<TimeScale> {
             localTime: item,
             hour: hour,
             hourWidth: hourWidth,
-            color: colors[item] ?? Colors.black,
+            color: widget.colors[item] ?? Colors.black,
           );
 
   ScaleItemBuilder scaleHorizontalDotBuilder = (context, hour) =>
